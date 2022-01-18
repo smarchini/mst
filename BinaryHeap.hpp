@@ -33,9 +33,9 @@ class BinaryHeap {
     for (size_t i = size() / 2; i > 0; --i) downheapfy(i);
   }
 
-  iterator begin() { data.begin(); }
+  iterator begin() { return data.begin(); }
 
-  iterator end() { data.end(); }
+  iterator end() { return data.end(); }
 
   void reserve(size_t size) { data.reserve(size); }
 

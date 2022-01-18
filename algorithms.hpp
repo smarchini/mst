@@ -38,3 +38,38 @@ std::vector<edge> prim(const AdjList& graph, size_t source) {
   return result;
 }
 
+template <template <typename, typename> class PriorityQueue>
+int edmonds(const AdjList& graph, size_t source) {
+  DisjointSet set(graph.size());
+  std::vector<PriorityQueue<edgeto, weightless>> inedges(graph.size());
+  for (size_t u = 0; u < graph.size(); u++)
+    for (auto [v, w] : graph.adjacents(u))
+      inedges[v].push(std::make_tuple(u, w));
+  int score = 0;
+  std::vector<size_t> visited(graph.size(), -1ULL);
+  visited[source] = source;
+  for (size_t s = 0; s < graph.size(); s++) {
+    std::vector<size_t> path;
+    for (size_t v = s; visited[v] == -1ULL;) {
+      path.push_back(v);
+      visited[v] = s;
+      if (inedges[v].empty()) return infty;
+      auto [u, w] = inedges[v].top();
+      inedges[v].pop();
+      score += w;
+      for (auto& [_, x] : inedges[v]) x -= w;
+      u = set.find(u);
+      if (visited[u] == s) {
+        while (true) {
+          size_t x = path.back();
+          path.pop_back();
+          if (!set.unite(u, x)) break;
+          inedges[set.find(u)].merge(std::move(inedges[x]));
+        }
+        visited[set.find(u)] = -1ULL;
+      }
+      v = set.find(u);
+    }
+  }
+  return score;
+}

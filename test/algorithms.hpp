@@ -18,3 +18,18 @@ TEST(minimum_spanning_tree, prim) {
   for (auto [u, v, w] : mst) weight += w;
   EXPECT_EQ(weight, 6);
 }
+
+TEST(minimum_spanning_arborescence, edmonds) {
+  AdjList digraph;
+  digraph.reserve(4);
+  digraph.insert(0, 1, 20);
+  digraph.insert(0, 2, 5);
+  digraph.insert(0, 3, 4);
+  digraph.insert(1, 2, 1);
+  digraph.insert(2, 1, 2);
+  digraph.insert(3, 2, 8);
+  digraph.insert(2, 3, 3);
+
+  auto msa = edmonds<BinaryHeap>(digraph, 0);
+  EXPECT_EQ(msa, 10);
+}
