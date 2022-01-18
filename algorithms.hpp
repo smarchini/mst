@@ -45,6 +45,7 @@ std::vector<edge> kruskal(const AdjList& graph) {
   DisjointSet set(graph.size());
 
   std::vector<edge> edges;
+  edges.reserve(graph.elements());
   for (size_t u = 0; u < graph.size(); u++)
     for (auto [v, w] : graph.adjacents(u)) edges.push_back({u, v, w});
   std::sort(edges.begin(), edges.end(), weightless());

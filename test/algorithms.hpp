@@ -4,7 +4,7 @@
 
 TEST(minimum_spanning_tree, prim) {
   AdjList graph;
-  graph.reserve(5);
+  graph.reserve(5 * 2);
   graph.insertBidirectional(0, 1, 3);
   graph.insertBidirectional(0, 2, 2);
   graph.insertBidirectional(1, 2, 1);
@@ -20,14 +20,15 @@ TEST(minimum_spanning_tree, prim) {
 }
 
 TEST(minimum_spanning_tree, kruskal) {
+  // Kruskal's algorithm does not need bidirectional edges
   AdjList graph;
   graph.reserve(5);
-  graph.insertBidirectional(0, 1, 3);
-  graph.insertBidirectional(0, 2, 2);
-  graph.insertBidirectional(1, 2, 1);
-  graph.insertBidirectional(1, 3, 4);
-  graph.insertBidirectional(2, 4, 1);
-  graph.insertBidirectional(3, 4, 2);
+  graph.insert(0, 1, 3);
+  graph.insert(0, 2, 2);
+  graph.insert(1, 2, 1);
+  graph.insert(1, 3, 4);
+  graph.insert(2, 4, 1);
+  graph.insert(3, 4, 2);
 
   auto mst = kruskal(graph);
 

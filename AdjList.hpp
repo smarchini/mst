@@ -22,6 +22,7 @@ struct weightless {
 class AdjList {
  private:
   std::vector<std::vector<edgeto>> data;
+  size_t count;
 
  public:
   using value_type = typename decltype(data)::value_type;
@@ -35,12 +36,14 @@ class AdjList {
   void resize(size_t size) { data.resize(size); }
 
   size_t size() const noexcept { return data.size(); }
+  size_t elements() const noexcept { return count; }
   const_reference adjacents(size_t i) const noexcept { return data[i]; }
 
   void insert(size_t i, size_t j, int w) {
     size_t m = std::max(i, j);
     if (m >= data.size()) resize(m + 1);
     data[i].push_back({j, w});
+    count++;
   }
 
   void insertBidirectional(size_t i, size_t j, int w) {
