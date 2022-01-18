@@ -13,6 +13,10 @@ struct weightless {
   bool operator()(const edgeto &lhs, const edgeto &rhs) const {
     return std::get<1>(lhs) < std::get<1>(rhs);
   }
+
+  bool operator()(const edge &lhs, const edge &rhs) const {
+    return std::get<2>(lhs) < std::get<2>(rhs);
+  }
 };
 
 class AdjList {

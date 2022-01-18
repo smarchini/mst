@@ -2,6 +2,7 @@
 
 #include <tuple>
 #include <vector>
+#include <algorithm>
 
 #include "AdjList.hpp"
 #include "BinaryHeap.hpp"
@@ -35,6 +36,26 @@ std::vector<edge> prim(const AdjList& graph, size_t source) {
   result.reserve(graph.size() - 1);
   for (size_t i = 1; i < graph.size(); i++)
     if (parent[i] != -1ULL) result.push_back({parent[i], i, key[i]});
+  return result;
+}
+
+std::vector<edge> kruskal(const AdjList& graph) {
+  std::vector<edge> result;
+  result.reserve(graph.size() - 1);
+  DisjointSet set(graph.size());
+
+  std::vector<edge> edges;
+  for (size_t u = 0; u < graph.size(); u++)
+    for (auto [v, w] : graph.adjacents(u)) edges.push_back({u, v, w});
+  std::sort(edges.begin(), edges.end(), weightless());
+
+  for (auto [u, v, w] : edges) {
+    if (set.find(u) != set.find(v)) {
+      result.push_back({u, v, w});
+      set.unite(u, v);
+    }
+  }
+
   return result;
 }
 

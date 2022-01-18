@@ -19,6 +19,23 @@ TEST(minimum_spanning_tree, prim) {
   EXPECT_EQ(weight, 6);
 }
 
+TEST(minimum_spanning_tree, kruskal) {
+  AdjList graph;
+  graph.reserve(5);
+  graph.insertBidirectional(0, 1, 3);
+  graph.insertBidirectional(0, 2, 2);
+  graph.insertBidirectional(1, 2, 1);
+  graph.insertBidirectional(1, 3, 4);
+  graph.insertBidirectional(2, 4, 1);
+  graph.insertBidirectional(3, 4, 2);
+
+  auto mst = kruskal(graph);
+
+  int weight = 0;
+  for (auto [u, v, w] : mst) weight += w;
+  EXPECT_EQ(weight, 6);
+}
+
 TEST(minimum_spanning_arborescence, edmonds) {
   AdjList digraph;
   digraph.reserve(4);
