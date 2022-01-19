@@ -24,13 +24,26 @@ class FibonacciHeap {
  public:
   class NodeIterator {
    private:
-    Node *head, node;
+    Node *head, *node;
 
    public:
     NodeIterator(Node* node) : head(node), node(node) {}
-    // NodeIterator& operator++() {}
-    // NodeIterator operator++(int) {}
-    // bool operator==(const NodeIterator&) const {}
+
+    T operator*() { return node->value; }
+
+    bool operator==(const NodeIterator& oth) const { return node == oth.node; }
+
+    NodeIterator& operator++() {
+      if (node->next == head) {
+        node = node->parent;
+        head = node;
+      } else if (node->child) {
+        node = node->child;
+      } else {
+        node = node->next;
+      }
+      return *this;
+    }
   };
 
  public:
@@ -46,13 +59,11 @@ class FibonacciHeap {
  public:
   FibonacciHeap() {}
 
-  ~FibonacciHeap() {
-    // TODO
-  }
+  ~FibonacciHeap() { deleteTraversal(heap); }
 
-  // iterator begin() { }
+  iterator begin() { return NodeIterator(heap); }
 
-  // iterator end() { }
+  iterator end() { return nullptr; }
 
   // void reserve(size_t size) { }
 
@@ -142,65 +153,14 @@ class FibonacciHeap {
     return a;
   }
 
-  Node* _removeMinimum(Node* n) {
-    _unMarkAndUnParentAll(n->child);
-    if (n->next == n) {
-      n = n->child;
-    } else {
-      n->next->prev = n->prev;
-      n->prev->next = n->next;
-      n = merge(n->next, n->child);
-    }
-    if (n == NULL) return n;
-    Node* trees[64] = {NULL};
-
-    while (true) {
-      if (trees[n->degree] != NULL) {
-        Node* t = trees[n->degree];
-        if (t == n) break;
-        trees[n->degree] = NULL;
-        if (n->value < t->value) {
-          t->prev->next = t->next;
-          t->next->prev = t->prev;
-          n->addChild(t);
-        } else {
-          t->prev->next = t->next;
-          t->next->prev = t->prev;
-          if (n->next == n) {
-            t->next = t->prev = t;
-            t->addChild(n);
-            n = t;
-          } else {
-            n->prev->next = t;
-            n->next->prev = t;
-            t->next = n->next;
-            t->prev = n->prev;
-            t->addChild(n);
-            n = t;
-          }
-        }
-        continue;
-      } else {
-        trees[n->degree] = n;
-      }
-      n = n->next;
-    }
-    Node* min = n;
-    Node* start = n;
+  void deleteTraversal(Node* node) {
+    if (!node) return;
+    Node* curr = node;
     do {
-      if (n->value < min->value) min = n;
-      n = n->next;
-    } while (n != start);
-    return min;
-  }
-
-  void _unMarkAndUnParentAll(Node* n) {
-    if (n == NULL) return;
-    Node* c = n;
-    do {
-      c->marked = false;
-      c->parent = NULL;
-      c = c->next;
-    } while (c != n);
+      Node* tmp = curr;
+      curr = curr->next;
+      deleteTraversal(tmp->child);
+      delete tmp;
+    } while (curr != node);
   }
 };

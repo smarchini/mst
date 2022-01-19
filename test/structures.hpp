@@ -40,3 +40,10 @@ void for_dary_heaps<1>(size_t n) {}
 TEST(DHeap, from_50_to_2) { for_dary_heaps<50>(100); }
 
 TEST(FibonacciHeap, heapsort) { heap<FibonacciHeap<int, std::less<int>>>(100); }
+
+TEST(FibonacciHeap, traversal) {
+  std::vector<int> a = { 4, 9, 1, 5, 7, 2, 3, 8, 6, 0};
+  FibonacciHeap<int, std::less<int>> heap;
+  for (auto e : a) heap.push(e);
+  for(auto e: heap) std::cout << e << "\n";
+}
