@@ -69,23 +69,16 @@ class BinaryHeap {
     data[j] = x;
   }
 
-  size_t upgoal(std::initializer_list<size_t> list) {
+  size_t goal(std::initializer_list<size_t> list, bool neg = false) {
     auto curr = std::begin(list), last = std::end(list), best = curr;
     for (++curr; curr != last && *curr < data.size(); ++curr)
-      if (Comparator()(data[*best], data[*curr])) best = curr;
-    return *best;
-  }
-
-  size_t downgoal(std::initializer_list<size_t> list) {
-    auto curr = std::begin(list), last = std::end(list), best = curr;
-    for (++curr; curr != last && *curr < data.size(); ++curr)
-      if (Comparator()(data[*curr], data[*best])) best = curr;
+      if (neg ^ Comparator()(data[*curr], data[*best])) best = curr;
     return *best;
   }
 
   void upheapfy(size_t i) {
     if (i == 0) return;
-    auto x = upgoal({i, (i - 1) / 2});
+    auto x = goal({i, (i - 1) / 2}, true);
     if (x == i) return;
     swap(i, x);
     upheapfy(x);
@@ -93,7 +86,7 @@ class BinaryHeap {
 
   void downheapfy(size_t i) {
     if (i >= data.size() / 2) return;
-    auto x = downgoal({i, 2 * (i + 1) - 1, 2 * (i + 1)});
+    auto x = goal({i, 2 * (i + 1) - 1, 2 * (i + 1)});
     if (x == i) return;
     swap(i, x);
     downheapfy(x);

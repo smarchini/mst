@@ -78,23 +78,16 @@ class DHeap {
     data[j] = x;
   }
 
-  size_t upgoal(std::initializer_list<size_t> list) {
+  size_t goal(const std::array<size_t, D + 1> &list, bool neg = false) {
     auto curr = std::begin(list), last = std::end(list), best = curr;
     for (++curr; curr != last && *curr < data.size(); ++curr)
-      if (Comparator()(data[*best], data[*curr])) best = curr;
-    return *best;
-  }
-
-  size_t downgoal(const std::array<size_t, D + 1> &list) {
-    auto curr = std::begin(list), last = std::end(list), best = curr;
-    for (++curr; curr != last && *curr < data.size(); ++curr)
-      if (Comparator()(data[*curr], data[*best])) best = curr;
+      if (neg ^ Comparator()(data[*curr], data[*best])) best = curr;
     return *best;
   }
 
   void upheapfy(size_t i) {
     if (i == 0) return;
-    auto x = upgoal({i, (i - 1) / D});
+    auto x = goal({i, (i - 1) / D}, true);
     if (x == i) return;
     swap(i, x);
     upheapfy(x);
@@ -102,7 +95,7 @@ class DHeap {
 
   void downheapfy(size_t i) {
     if (i >= data.size() / 2) return;
-    auto x = downgoal(i_and_children<D>(i));
+    auto x = goal(i_and_children<D>(i));
     if (x == i) return;
     swap(i, x);
     downheapfy(x);
