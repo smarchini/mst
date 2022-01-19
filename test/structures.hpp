@@ -2,6 +2,7 @@
 
 #include <BinaryHeap.hpp>
 #include <DHeap.hpp>
+#include <FibonacciHeap.hpp>
 #include <algorithm>
 #include <vector>
 
@@ -52,3 +53,17 @@ template <>
 void for_dary_heaps<1>() {}
 
 TEST(DHeap, from_50_to_2) { for_dary_heaps<50>(); }
+
+TEST(FibonacciHeap, heapsort) {
+  std::vector<int> a = {4, 1, 5, 2, 3};
+  FibonacciHeap<int, std::less<int>> heap;
+  for (auto e : a) heap.push(e);
+
+  auto curr = heap.top();
+  while (!heap.empty()) {
+    auto next = heap.top();
+    EXPECT_LE(curr, next);
+    curr = next;
+    heap.pop();
+  }
+}

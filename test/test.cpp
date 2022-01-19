@@ -4,8 +4,8 @@
 #include <ctime>
 
 // clang-format off
-#include "datastructures.hpp"
-#include "algorithms.hpp"
+#include "structures.hpp"
+#include "algos.hpp"
 // clang-format on
 
 int main(int argc, char **argv) {

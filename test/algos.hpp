@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithms.hpp>
+#include <random>
 
 TEST(minimum_spanning_tree, prim) {
   AdjList graph;
@@ -20,7 +21,7 @@ TEST(minimum_spanning_tree, prim) {
 }
 
 TEST(minimum_spanning_tree, kruskal) {
-  // Kruskal's algorithm does not need bidirectional edges
+  // Kruskal's algorithm does not need bidirectional links
   AdjList graph;
   graph.reserve(5);
   graph.insert(0, 1, 3);
@@ -50,4 +51,24 @@ TEST(minimum_spanning_arborescence, edmonds) {
 
   auto msa = edmonds<BinaryHeap>(digraph, 0);
   EXPECT_EQ(msa, 10);
+}
+
+TEST(minimum_spanning_tree, all_the_same) {
+  std::random_device dev;
+  std::mt19937 rng(dev());
+  std::uniform_int_distribution<std::mt19937::result_type> weight(1, 100);
+
+  AdjList graph;
+  graph.reserve(100 * 100 * 2);
+  for (size_t u = 0; u < 100; u++)
+    for (size_t v = 0; v < 100; v++)
+      graph.insertBidirectional(u, v, weight(rng));
+
+  int prim_weight = 0, kruskal_weight = 0, edmonds_weight = 0;
+  for (auto [u, v, w] : prim<BinaryHeap>(graph, 0)) prim_weight += w;
+  for (auto [u, v, w] : kruskal(graph)) kruskal_weight += w;
+  edmonds_weight = edmonds<BinaryHeap>(graph, 0);
+  EXPECT_EQ(prim_weight, kruskal_weight);
+  EXPECT_EQ(prim_weight, edmonds_weight);
+  EXPECT_EQ(kruskal_weight, edmonds_weight);
 }
