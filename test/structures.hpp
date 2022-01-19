@@ -55,9 +55,14 @@ void for_dary_heaps<1>() {}
 TEST(DHeap, from_50_to_2) { for_dary_heaps<50>(); }
 
 TEST(FibonacciHeap, heapsort) {
-  std::vector<int> a = {4, 1, 5, 2, 3};
+  std::vector<int> a(500);
+  std::vector<int> b(500);
+  std::generate(a.begin(), a.end(), std::rand);
+  std::generate(b.begin(), b.end(), std::rand);
+
   FibonacciHeap<int, std::less<int>> heap;
   for (auto e : a) heap.push(e);
+  for (auto e : b) heap.push(e);
 
   auto curr = heap.top();
   while (!heap.empty()) {
@@ -67,3 +72,19 @@ TEST(FibonacciHeap, heapsort) {
     heap.pop();
   }
 }
+
+
+// TEST(FibonacciHeap, heapsort) {
+//   //std::vector<int> a = {4, 1, 5, 2, 3};
+//   std::vector<int> a = {4, 1, 5, 2, 3};
+//   FibonacciHeap<int> heap;
+//   for (auto e : a) heap.insert(e);
+//   auto curr = heap.getMinimum();
+//   while (!heap.isEmpty()) {
+//     auto next = heap.getMinimum();
+//     std::cout << next << "\n";
+//     //EXPECT_LE(curr, next);
+//     curr = next;
+//     heap.removeMinimum();
+//   }
+// }

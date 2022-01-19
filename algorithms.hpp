@@ -80,8 +80,7 @@ int edmonds(const AdjList& graph, size_t source) {
       inedges[v].pop();
       score += w;
       for (auto& [_, x] : inedges[v]) x -= w;
-      u = set.find(u);
-      if (visited[u] == s) {
+      if (visited[set.find(u)] == s) {
         while (true) {
           size_t x = path.back();
           path.pop_back();

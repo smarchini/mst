@@ -59,9 +59,9 @@ TEST(minimum_spanning_tree, all_the_same) {
   std::uniform_int_distribution<std::mt19937::result_type> weight(1, 100);
 
   AdjList graph;
-  graph.reserve(100 * 100 * 2);
+  graph.reserve(100 * 99);
   for (size_t u = 0; u < 100; u++)
-    for (size_t v = 0; v < 100; v++)
+    for (size_t v = u+1; v < 100; v++)
       graph.insertBidirectional(u, v, weight(rng));
 
   int prim_weight = 0, kruskal_weight = 0, edmonds_weight = 0;

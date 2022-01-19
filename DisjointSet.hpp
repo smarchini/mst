@@ -12,7 +12,7 @@ class DisjointSet {
     std::iota(std::begin(parent), std::end(parent), 0);
   }
 
-  int find(size_t elt) {
+  size_t find(size_t elt) {
     if (parent[elt] == elt) return elt;
     parent[elt] = find(parent[elt]);
     return parent[elt];
