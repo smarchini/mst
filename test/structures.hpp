@@ -6,31 +6,14 @@
 #include <algorithm>
 #include <vector>
 
-TEST(BinaryHeap, heapsort) {
-  std::vector<int> a(500);
-  std::vector<int> b(500);
-  std::generate(a.begin(), a.end(), std::rand);
-  std::generate(b.begin(), b.end(), std::rand);
-  BinaryHeap<int, std::less<int>> heap;
-  for (auto e : a) heap.push(e);
-  for (auto e : b) heap.push(e);
-  auto curr = heap.top();
-  while (!heap.empty()) {
-    auto next = heap.top();
-    EXPECT_LE(curr, next);
-    curr = next;
-    heap.pop();
-  }
-}
-
-template <size_t d>
-inline void dary_heap() {
-  std::vector<int> a(500);
-  std::vector<int> b(500);
+template <typename HEAP>
+inline void heap(size_t n) {
+  std::vector<int> a(n);
+  std::vector<int> b(n);
   std::generate(a.begin(), a.end(), std::rand);
   std::generate(b.begin(), b.end(), std::rand);
 
-  DHeap<d, int, std::less<int>> heap;
+  HEAP heap;
   for (auto e : a) heap.push(e);
   for (auto e : b) heap.push(e);
 
@@ -42,49 +25,18 @@ inline void dary_heap() {
     heap.pop();
   }
 }
+
+TEST(BinaryHeap, heapsort) { heap<BinaryHeap<int, std::less<int>>>(100); }
 
 template <int N>
-void for_dary_heaps() {
-  dary_heap<N>();
-  for_dary_heaps<N - 1>();
+void for_dary_heaps(size_t n) {
+  heap<DHeap<N, int, std::less<int>>>(n);
+  for_dary_heaps<N - 1>(n);
 }
 
 template <>
-void for_dary_heaps<1>() {}
+void for_dary_heaps<1>(size_t n) {}
 
-TEST(DHeap, from_50_to_2) { for_dary_heaps<50>(); }
+TEST(DHeap, from_50_to_2) { for_dary_heaps<50>(100); }
 
-TEST(FibonacciHeap, heapsort) {
-  std::vector<int> a(500);
-  std::vector<int> b(500);
-  std::generate(a.begin(), a.end(), std::rand);
-  std::generate(b.begin(), b.end(), std::rand);
-
-  FibonacciHeap<int, std::less<int>> heap;
-  for (auto e : a) heap.push(e);
-  for (auto e : b) heap.push(e);
-
-  auto curr = heap.top();
-  while (!heap.empty()) {
-    auto next = heap.top();
-    EXPECT_LE(curr, next);
-    curr = next;
-    heap.pop();
-  }
-}
-
-
-// TEST(FibonacciHeap, heapsort) {
-//   //std::vector<int> a = {4, 1, 5, 2, 3};
-//   std::vector<int> a = {4, 1, 5, 2, 3};
-//   FibonacciHeap<int> heap;
-//   for (auto e : a) heap.insert(e);
-//   auto curr = heap.getMinimum();
-//   while (!heap.isEmpty()) {
-//     auto next = heap.getMinimum();
-//     std::cout << next << "\n";
-//     //EXPECT_LE(curr, next);
-//     curr = next;
-//     heap.removeMinimum();
-//   }
-// }
+TEST(FibonacciHeap, heapsort) { heap<FibonacciHeap<int, std::less<int>>>(100); }
