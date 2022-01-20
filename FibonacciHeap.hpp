@@ -73,6 +73,7 @@ class FibonacciHeap {
 
   const_reference top() const noexcept { return heap->value; }
 
+  // TODO usare Comparator invece degli < hardcodati
   void pop() {
     //  Melding: move the children into the forest
     if (Node* it = heap->child) {
@@ -114,7 +115,7 @@ class FibonacciHeap {
         oth->next = curr->next;
         oth->prev = curr->prev;
       }
-      if (curr->value < oth->value) {
+      if (Comparator()(curr->value, oth->value)) {
         curr->addChild(oth);
         curr = curr->next;
       } else {
@@ -126,7 +127,7 @@ class FibonacciHeap {
     // Fix the head pointer: must be the minimum value
     Node* begin = heap;
     for (Node* it = heap->next; it != begin; it = it->next)
-      if (it->value < heap->value) heap = it;
+      if (Comparator()(it->value, heap->value)) heap = it;
   }
 
   constexpr void push(std::convertible_to<value_type> auto&& value) {
@@ -143,7 +144,7 @@ class FibonacciHeap {
   static Node* merge(Node* a, Node* b) {
     if (!a) return b;
     if (!b) return a;
-    if (a->value > b->value) std::swap(a, b);
+    if (Comparator()(b->value, a->value)) std::swap(a, b);
     Node* following = a->next;
     Node* preceding = b->prev;
     a->next = b;

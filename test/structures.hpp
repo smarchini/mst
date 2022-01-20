@@ -35,15 +35,19 @@ void for_dary_heaps(size_t n) {
 }
 
 template <>
-void for_dary_heaps<1>(size_t n) {}
+void for_dary_heaps<1>(size_t) {}
 
 TEST(DHeap, from_50_to_2) { for_dary_heaps<50>(100); }
 
 TEST(FibonacciHeap, heapsort) { heap<FibonacciHeap<int, std::less<int>>>(100); }
 
 TEST(FibonacciHeap, traversal) {
-  std::vector<int> a = { 4, 9, 1, 5, 7, 2, 3, 8, 6, 0};
+  std::vector<int> a = {4, 9, 1, 5, 7, 2, 3, 8, 6, 0};
   FibonacciHeap<int, std::less<int>> heap;
   for (auto e : a) heap.push(e);
-  for(auto e: heap) std::cout << e << "\n";
+
+  std::vector<int> result;
+  for (auto e : heap) result.push_back(e);
+  std::vector<int> correct = {0, 1, 6, 8, 3, 2, 7, 5, 4, 9};
+  for (size_t i = 0; i < correct.size(); i++) EXPECT_EQ(correct[i], result[i]);
 }
