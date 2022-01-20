@@ -96,8 +96,8 @@ int edmonds(const AdjList& graph, size_t source) {
   return score;
 }
 
-inline AdjList generate_random_digraph(size_t n, double d, int w) {
-  const size_t m = n * (n-1) * d;
+inline AdjList random_graph(size_t n, double d, int w, bool directed = false) {
+  const size_t m = directed ? n * (n - 1) * d : n * (n - 1) * d / 2.0;
   std::random_device rd;
   std::mt19937 rng(rd());
   std::uniform_int_distribution<size_t> node(0, n - 1);
@@ -109,27 +109,10 @@ inline AdjList generate_random_digraph(size_t n, double d, int w) {
     auto cmp = [v](const auto x) { return std::get<0>(x) == v; };
     auto adj = result.adjacents(u);
     if (std::find_if(std::begin(adj), std::end(adj), cmp) == std::end(adj)) {
-      result.insert(u, v, weight(rng));
-      k++;
-    }
-  }
-  return result;
-}
-
-inline AdjList generate_random_graph(size_t n, double d, int w) {
-  const size_t m = n * (n - 1) / 2.0 * d;
-  std::random_device rd;
-  std::mt19937 rng(rd());
-  std::uniform_int_distribution<size_t> node(0, n - 1);
-  std::uniform_int_distribution<int> weight(1, w);
-
-  AdjList result(n);
-  for (size_t k = 0; k < m;) {
-    size_t u = node(rng), v = node(rng);
-    auto cmp = [v](const auto x) { return std::get<0>(x) == v; };
-    auto adj = result.adjacents(u);
-    if (std::find_if(std::begin(adj), std::end(adj), cmp) == std::end(adj)) {
-      result.insertBidirectional(u, v, weight(rng));
+      if (directed)
+        result.insert(u, v, weight(rng));
+      else
+        result.insertBidirectional(u, v, weight(rng));
       k++;
     }
   }

@@ -69,7 +69,7 @@ TEST(minimum_spanning_tree, all_the_same) {
   std::random_device dev;
   std::mt19937 rng(dev());
   std::uniform_int_distribution<std::mt19937::result_type> weight(1, 100);
-  auto graph = generate_random_graph(100, 0.7, 100);
+  auto graph = random_graph(100, 0.7, 100);
 
   int w_kruskal = 0;
   for (auto [u, v, w] : kruskal(graph)) w_kruskal += w;
@@ -85,11 +85,12 @@ TEST(minimum_spanning_tree, all_the_same) {
   int w_prim_fheap = 0;
   for (auto [u, v, w] : prim<FibonacciHeap>(graph, 0)) w_prim_fheap += w;
 
-  // int w_edmonds_2heap = edmonds<BinaryHeap>(graph, 0);
+  int w_edmonds_2heap = edmonds<BinaryHeap>(graph, 0);
 
   EXPECT_EQ(w_kruskal, w_prim_2heap);
   EXPECT_EQ(w_kruskal, w_prim_d3heap);
   EXPECT_EQ(w_kruskal, w_prim_d4heap);
   EXPECT_EQ(w_kruskal, w_prim_d5heap);
   EXPECT_EQ(w_kruskal, w_prim_fheap);
+  EXPECT_EQ(w_kruskal, w_edmonds_2heap);
 }
