@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 template <typename T, typename Comparator>
 class FibonacciHeap {
@@ -29,7 +30,8 @@ class FibonacciHeap {
    public:
     NodeIterator(Node* node) : head(node), node(node) {}
 
-    T operator*() { return node->value; }
+    // T operator*() { return node->value; }
+    T& operator*() { return node->value; }
 
     bool operator==(const NodeIterator& oth) const { return node == oth.node; }
 
@@ -61,8 +63,16 @@ class FibonacciHeap {
 
   ~FibonacciHeap() { deleteTraversal(heap); }
 
-  iterator begin() { return NodeIterator(heap); }
+  FibonacciHeap(const FibonacciHeap&) = delete;
+  FibonacciHeap(FibonacciHeap&& oth) { std::swap(this->heap, oth.heap); }
 
+  FibonacciHeap& operator=(const FibonacciHeap&) = delete;
+  FibonacciHeap& operator=(FibonacciHeap&& oth) {
+    std::swap(this->heap, oth.heap);
+    return *this;
+  }
+
+  iterator begin() { return NodeIterator(heap); }
   iterator end() { return nullptr; }
 
   // void reserve(size_t size) { }
@@ -136,6 +146,7 @@ class FibonacciHeap {
 
   void merge(FibonacciHeap<T, Comparator>&& oth) {
     heap = merge(heap, oth.heap);
+    oth.heap = nullptr;
   }
 
  private:

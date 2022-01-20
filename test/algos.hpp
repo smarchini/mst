@@ -66,10 +66,33 @@ TEST(minimum_spanning_arborescence, edmonds) {
 }
 
 TEST(minimum_spanning_tree, all_the_same) {
+  const size_t n = 100;
   std::random_device dev;
   std::mt19937 rng(dev());
   std::uniform_int_distribution<std::mt19937::result_type> weight(1, 100);
-  auto graph = random_graph(100, 0.7, 100);
+
+  auto graph = random_graph(n, 0.8, 100);
+  // AdjList graph;
+  // graph.insert(0, 4, 13);
+  // graph.insert(0, 3, 57);
+  // graph.insert(0, 1, 8);
+  // graph.insert(0, 2, 69);
+  // graph.insert(1, 4, 27);
+  // graph.insert(1, 0, 8);
+  // graph.insert(1, 2, 5);
+  // graph.insert(1, 3, 20);
+  // graph.insert(2, 4, 4);
+  // graph.insert(2, 0, 69);
+  // graph.insert(2, 1, 5);
+  // graph.insert(2, 3, 65);
+  // graph.insert(3, 0, 57);
+  // graph.insert(3, 4, 43);
+  // graph.insert(3, 2, 65);
+  // graph.insert(3, 1, 20);
+  // graph.insert(4, 1, 27);
+  // graph.insert(4, 0, 13);
+  // graph.insert(4, 3, 43);
+  // graph.insert(4, 2, 4);
 
   int w_kruskal = 0;
   for (auto [u, v, w] : kruskal(graph)) w_kruskal += w;
@@ -86,11 +109,20 @@ TEST(minimum_spanning_tree, all_the_same) {
   for (auto [u, v, w] : prim<FibonacciHeap>(graph, 0)) w_prim_fheap += w;
 
   int w_edmonds_2heap = edmonds<BinaryHeap>(graph, 0);
+  int w_edmonds_d3heap = edmonds<D3Heap>(graph, 0);
+  int w_edmonds_d4heap = edmonds<D4Heap>(graph, 0);
+  int w_edmonds_d5heap = edmonds<D5Heap>(graph, 0);
+  int w_edmonds_fheap = edmonds<FibonacciHeap>(graph, 0);
 
   EXPECT_EQ(w_kruskal, w_prim_2heap);
   EXPECT_EQ(w_kruskal, w_prim_d3heap);
   EXPECT_EQ(w_kruskal, w_prim_d4heap);
   EXPECT_EQ(w_kruskal, w_prim_d5heap);
   EXPECT_EQ(w_kruskal, w_prim_fheap);
+
   EXPECT_EQ(w_kruskal, w_edmonds_2heap);
+  EXPECT_EQ(w_kruskal, w_edmonds_d3heap);
+  EXPECT_EQ(w_kruskal, w_edmonds_d4heap);
+  EXPECT_EQ(w_kruskal, w_edmonds_d5heap);
+  EXPECT_EQ(w_kruskal, w_edmonds_fheap);
 }

@@ -1,13 +1,37 @@
 #pragma once
 
 #include <algorithm>
+#include <iostream>
 #include <random>
 #include <tuple>
 #include <vector>
 
 #include "AdjList.hpp"
-#include "BinaryHeap.hpp"
 #include "DisjointSet.hpp"
+
+inline AdjList random_graph(size_t n, double d, int w, bool directed = false) {
+  const size_t m = directed ? n * (n - 1) * d : n * (n - 1) * d / 2.0;
+  std::random_device rd;
+  std::mt19937 rng(rd());
+  std::uniform_int_distribution<size_t> node(0, n - 1);
+  std::uniform_int_distribution<int> weight(1, w);
+
+  AdjList result(n);
+  for (size_t k = 0; k < m;) {
+    size_t u = node(rng), v = node(rng);
+    auto adj = result.adjacents(u);
+    auto cmp = [v](const auto x) { return std::get<0>(x) == v; };
+    if (u != v && v != 0 &&
+        std::find_if(std::begin(adj), std::end(adj), cmp) == std::end(adj)) {
+      if (directed)
+        result.insert(u, v, weight(rng));
+      else
+        result.insertBidirectional(u, v, weight(rng));
+      k++;
+    }
+  }
+  return result;
+}
 
 template <template <typename, typename> class PriorityQueue>
 std::vector<edge> prim(const AdjList& graph, size_t source) {
@@ -82,39 +106,18 @@ int edmonds(const AdjList& graph, size_t source) {
       score += w;
       for (auto& [_, x] : inedges[v]) x -= w;
       if (visited[set.find(u)] == s) {
+        PriorityQueue<edgeto, weightless> heap;
         while (true) {
           size_t x = path.back();
           path.pop_back();
+          heap.merge(std::move(inedges[x]));
           if (!set.unite(u, x)) break;
-          inedges[set.find(u)].merge(std::move(inedges[x]));
         }
+        inedges[set.find(u)] = std::move(heap);
         visited[set.find(u)] = -1ULL;
       }
       v = set.find(u);
     }
   }
   return score;
-}
-
-inline AdjList random_graph(size_t n, double d, int w, bool directed = false) {
-  const size_t m = directed ? n * (n - 1) * d : n * (n - 1) * d / 2.0;
-  std::random_device rd;
-  std::mt19937 rng(rd());
-  std::uniform_int_distribution<size_t> node(0, n - 1);
-  std::uniform_int_distribution<int> weight(1, w);
-
-  AdjList result(n);
-  for (size_t k = 0; k < m;) {
-    size_t u = node(rng), v = node(rng);
-    auto cmp = [v](const auto x) { return std::get<0>(x) == v; };
-    auto adj = result.adjacents(u);
-    if (std::find_if(std::begin(adj), std::end(adj), cmp) == std::end(adj)) {
-      if (directed)
-        result.insert(u, v, weight(rng));
-      else
-        result.insertBidirectional(u, v, weight(rng));
-      k++;
-    }
-  }
-  return result;
 }
