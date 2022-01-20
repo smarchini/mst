@@ -69,12 +69,7 @@ TEST(minimum_spanning_tree, all_the_same) {
   std::random_device dev;
   std::mt19937 rng(dev());
   std::uniform_int_distribution<std::mt19937::result_type> weight(1, 100);
-
-  AdjList graph;
-  graph.reserve(100 * 99);
-  for (size_t u = 0; u < 100; u++)
-    for (size_t v = u + 1; v < 100; v++)
-      graph.insertBidirectional(u, v, weight(rng));
+  auto graph = generate_random_graph(100, 200, 100);
 
   int w_kruskal = 0;
   for (auto [u, v, w] : kruskal(graph)) w_kruskal += w;

@@ -31,6 +31,7 @@ class AdjList {
   using const_iterator = typename decltype(data)::const_iterator;
 
   AdjList() {}
+  AdjList(size_t n) : data(n) {}
 
   void reserve(size_t size) { data.reserve(size); }
   void resize(size_t size) { data.resize(size); }

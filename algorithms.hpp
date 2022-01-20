@@ -1,8 +1,9 @@
 #pragma once
 
+#include <algorithm>
+#include <random>
 #include <tuple>
 #include <vector>
-#include <algorithm>
 
 #include "AdjList.hpp"
 #include "BinaryHeap.hpp"
@@ -93,4 +94,44 @@ int edmonds(const AdjList& graph, size_t source) {
     }
   }
   return score;
+}
+
+inline AdjList generate_random_digraph(size_t nodes, size_t edges, int maxweight) {
+  AdjList graph(nodes);
+  std::random_device rd;
+  std::mt19937 rng(rd());
+  std::uniform_int_distribution<size_t> node(0, nodes - 1);
+  std::uniform_int_distribution<int> weight(1, maxweight);
+
+  for (size_t k = 0; k < edges;) {
+    size_t u = node(rng), v = node(rng);
+    auto cmp = [v](const auto x) { return std::get<0>(x) == v; };
+    auto adj = graph.adjacents(u);
+    if (std::find_if(std::begin(adj), std::end(adj), cmp) == std::end(adj)) {
+      graph.insert(u, v, weight(rng));
+      k++;
+    }
+  }
+
+  return graph;
+}
+
+inline AdjList generate_random_graph(size_t nodes, size_t edges, int maxweight) {
+  AdjList graph(nodes);
+  std::random_device rd;
+  std::mt19937 rng(rd());
+  std::uniform_int_distribution<size_t> node(0, nodes - 1);
+  std::uniform_int_distribution<int> weight(1, maxweight);
+
+  for (size_t k = 0; k < edges;) {
+    size_t u = node(rng), v = node(rng);
+    auto cmp = [v](const auto x) { return std::get<0>(x) == v; };
+    auto adj = graph.adjacents(u);
+    if (std::find_if(std::begin(adj), std::end(adj), cmp) == std::end(adj)) {
+      graph.insertBidirectional(u, v, weight(rng));
+      k++;
+    }
+  }
+
+  return graph;
 }
