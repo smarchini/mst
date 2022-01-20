@@ -96,42 +96,42 @@ int edmonds(const AdjList& graph, size_t source) {
   return score;
 }
 
-inline AdjList generate_random_digraph(size_t nodes, size_t edges, int maxweight) {
-  AdjList graph(nodes);
+inline AdjList generate_random_digraph(size_t n, double d, int w) {
+  const size_t m = n * (n-1) * d;
   std::random_device rd;
   std::mt19937 rng(rd());
-  std::uniform_int_distribution<size_t> node(0, nodes - 1);
-  std::uniform_int_distribution<int> weight(1, maxweight);
+  std::uniform_int_distribution<size_t> node(0, n - 1);
+  std::uniform_int_distribution<int> weight(1, w);
 
-  for (size_t k = 0; k < edges;) {
+  AdjList result(n);
+  for (size_t k = 0; k < m;) {
     size_t u = node(rng), v = node(rng);
     auto cmp = [v](const auto x) { return std::get<0>(x) == v; };
-    auto adj = graph.adjacents(u);
+    auto adj = result.adjacents(u);
     if (std::find_if(std::begin(adj), std::end(adj), cmp) == std::end(adj)) {
-      graph.insert(u, v, weight(rng));
+      result.insert(u, v, weight(rng));
       k++;
     }
   }
-
-  return graph;
+  return result;
 }
 
-inline AdjList generate_random_graph(size_t nodes, size_t edges, int maxweight) {
-  AdjList graph(nodes);
+inline AdjList generate_random_graph(size_t n, double d, int w) {
+  const size_t m = n * (n - 1) / 2.0 * d;
   std::random_device rd;
   std::mt19937 rng(rd());
-  std::uniform_int_distribution<size_t> node(0, nodes - 1);
-  std::uniform_int_distribution<int> weight(1, maxweight);
+  std::uniform_int_distribution<size_t> node(0, n - 1);
+  std::uniform_int_distribution<int> weight(1, w);
 
-  for (size_t k = 0; k < edges;) {
+  AdjList result(n);
+  for (size_t k = 0; k < m;) {
     size_t u = node(rng), v = node(rng);
     auto cmp = [v](const auto x) { return std::get<0>(x) == v; };
-    auto adj = graph.adjacents(u);
+    auto adj = result.adjacents(u);
     if (std::find_if(std::begin(adj), std::end(adj), cmp) == std::end(adj)) {
-      graph.insertBidirectional(u, v, weight(rng));
+      result.insertBidirectional(u, v, weight(rng));
       k++;
     }
   }
-
-  return graph;
+  return result;
 }

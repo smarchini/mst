@@ -69,7 +69,7 @@ TEST(minimum_spanning_tree, all_the_same) {
   std::random_device dev;
   std::mt19937 rng(dev());
   std::uniform_int_distribution<std::mt19937::result_type> weight(1, 100);
-  auto graph = generate_random_graph(100, 200, 100);
+  auto graph = generate_random_graph(100, 0.7, 100);
 
   int w_kruskal = 0;
   for (auto [u, v, w] : kruskal(graph)) w_kruskal += w;
