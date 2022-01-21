@@ -9,27 +9,92 @@
 #include "AdjList.hpp"
 #include "DisjointSet.hpp"
 
-inline AdjList random_graph(size_t n, double d, int w, bool directed = false) {
-  const size_t m = directed ? n * (n - 1) * d : n * (n - 1) * d / 2.0;
+static void make_complete(AdjList& g, int w, bool digraph) {
   std::random_device rd;
   std::mt19937 rng(rd());
-  std::uniform_int_distribution<size_t> node(0, n - 1);
+  std::uniform_int_distribution<int> weight(1, w);
+  if (digraph) {
+    for (size_t u = 0; u < g.size(); u++)
+      for (size_t v = 0; v < g.size(); v++) g.insert(u, v, weight(rng));
+  } else {
+    for (size_t u = 0; u < g.size() - 1; u++)
+      for (size_t v = u + 1; v < g.size(); v++)
+        g.insertBidirectional(u, v, weight(rng));
+  }
+}
+
+static void set_edges(AdjList& g, size_t m, int w, bool add, bool digraph) {
+  std::random_device rd;
+  std::mt19937 rng(rd());
+  std::uniform_int_distribution<size_t> node(0, g.size() - 1);
   std::uniform_int_distribution<int> weight(1, w);
 
-  AdjList result(n);
   for (size_t k = 0; k < m;) {
     size_t u = node(rng), v = node(rng);
-    auto adj = result.adjacents(u);
-    auto cmp = [v](const auto x) { return std::get<0>(x) == v; };
-    if (u != v && v != 0 &&
-        std::find_if(std::begin(adj), std::end(adj), cmp) == std::end(adj)) {
-      if (directed)
-        result.insert(u, v, weight(rng));
-      else
-        result.insertBidirectional(u, v, weight(rng));
+    if (u == v) continue;
+    auto adj = g.adjacents(u);
+    auto it = std::find_if(std::begin(adj), std::end(adj), [v, w](auto x) {
+      return std::get<0>(x) == v && std::get<1>(x) <= w;
+    });
+    if (add && it == std::end(adj)) {
+      if (digraph) {
+        g.insert(u, v, weight(rng));
+      } else {
+        g.insertBidirectional(u, v, weight(rng));
+      }
+      k++;
+    } else if (!add && it != std::end(adj)) {
+      if (digraph) {
+        g.remove(u, v);
+      } else {
+        g.removeBidirectional(u, v);
+      }
       k++;
     }
   }
+}
+
+inline AdjList random_graph(size_t n, double d, int w, bool digraph = false) {
+  AdjList result(n);
+  const size_t m = digraph ? n * n : n * (n - 1);
+  const size_t edges = m * d;
+
+  if (d <= 0.5) {
+    set_edges(result, edges, w, true, digraph);
+  } else {
+    make_complete(result, w, digraph);
+    set_edges(result, m - edges, w, false, digraph);
+  }
+
+  for (size_t v = 1; v < n; v++) {
+    if (digraph) {
+      result.insert(0, v, w + 1);
+    } else {
+      result.insertBidirectional(0, v, w + 1);
+    }
+  }
+
+  return result;
+}
+
+inline std::vector<edge> kruskal(const AdjList& graph) {
+  std::vector<edge> result;
+  result.reserve(graph.size() - 1);
+  DisjointSet set(graph.size());
+
+  std::vector<edge> edges;
+  edges.reserve(graph.elements());
+  for (size_t u = 0; u < graph.size(); u++)
+    for (auto [v, w] : graph.adjacents(u)) edges.push_back({u, v, w});
+  std::sort(edges.begin(), edges.end(), weightless());
+
+  for (auto [u, v, w] : edges) {
+    if (set.find(u) != set.find(v)) {
+      result.push_back({u, v, w});
+      set.unite(u, v);
+    }
+  }
+
   return result;
 }
 
@@ -61,27 +126,6 @@ std::vector<edge> prim(const AdjList& graph, size_t source) {
   result.reserve(graph.size() - 1);
   for (size_t i = 1; i < graph.size(); i++)
     if (parent[i] != -1ULL) result.push_back({parent[i], i, key[i]});
-  return result;
-}
-
-std::vector<edge> kruskal(const AdjList& graph) {
-  std::vector<edge> result;
-  result.reserve(graph.size() - 1);
-  DisjointSet set(graph.size());
-
-  std::vector<edge> edges;
-  edges.reserve(graph.elements());
-  for (size_t u = 0; u < graph.size(); u++)
-    for (auto [v, w] : graph.adjacents(u)) edges.push_back({u, v, w});
-  std::sort(edges.begin(), edges.end(), weightless());
-
-  for (auto [u, v, w] : edges) {
-    if (set.find(u) != set.find(v)) {
-      result.push_back({u, v, w});
-      set.unite(u, v);
-    }
-  }
-
   return result;
 }
 

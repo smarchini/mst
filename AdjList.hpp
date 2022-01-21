@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <functional>
 #include <limits>
 #include <tuple>
@@ -22,7 +23,7 @@ struct weightless {
 class AdjList {
  private:
   std::vector<std::vector<edgeto>> data;
-  size_t count;
+  size_t count = 0;
 
  public:
   using value_type = typename decltype(data)::value_type;
@@ -50,5 +51,17 @@ class AdjList {
   void insertBidirectional(size_t i, size_t j, int w) {
     insert(i, j, w);
     insert(j, i, w);
+  }
+
+  void remove(size_t i, size_t j) {
+    auto cmp = [j](auto &x) { return std::get<0>(x) == j; };
+    auto it = std::remove_if(data[i].begin(), data[i].end(), cmp);
+    data[i].erase(it, data[i].end());
+    count--;
+  }
+
+  void removeBidirectional(size_t i, size_t j) {
+    remove(i, j);
+    remove(j, i);
   }
 };
