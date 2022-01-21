@@ -22,7 +22,7 @@ class BinaryHeap {
   template <typename It>
   explicit BinaryHeap(It begin, It end) : data(begin, end) {
     static_assert(std::is_same<value_type, T>::value, "Type mismatch");
-    for (size_t i = data.size() / 2; i > 0; --i) downheapfy(i);
+    for (size_t i = data.size() - 1; i != -1ULL; i--) downheapfy(i);
   }
 
   BinaryHeap(const std::initializer_list<T> &lst)
@@ -30,7 +30,7 @@ class BinaryHeap {
 
   BinaryHeap(std::initializer_list<T> &&lst) : data(std::move(lst)) {
     static_assert(std::is_same<value_type, T>::value, "Type mismatch");
-    for (size_t i = data.size() / 2; i > 0; --i) downheapfy(i);
+    for (size_t i = data.size() - 1; i != -1ULL; i--) downheapfy(i);
   }
 
   iterator begin() { return data.begin(); }
@@ -57,9 +57,8 @@ class BinaryHeap {
   }
 
   void merge(BinaryHeap<T, Comparator> &&oth) {
-    const size_t n = data.size() - 1;
     data.insert(std::end(data), std::begin(oth.data), std::end(oth.data));
-    for (size_t i = n; i != -1ULL; --i) downheapfy(i);
+    for (size_t i = data.size() - 1; i != -1ULL; --i) downheapfy(i);
   }
 
  private:
@@ -85,7 +84,7 @@ class BinaryHeap {
   }
 
   void downheapfy(size_t i) {
-    if (i >= data.size() / 2) return;
+    if (i >= data.size()) return;
     auto x = goal({i, 2 * (i + 1) - 1, 2 * (i + 1)});
     if (x == i) return;
     swap(i, x);
