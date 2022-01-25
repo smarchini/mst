@@ -5,8 +5,8 @@
 #include <FibonacciHeap.hpp>
 #include <algorithms.hpp>
 
-constexpr size_t nodes[] = {100, 500, 1000};
-constexpr double degrees[] = {0.1, 0.5, 1.0};
+constexpr size_t nodes[] = {100, 1000};
+constexpr double degrees[] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 constexpr int weights[] = {100};
 
 static void args(benchmark::internal::Benchmark* b) {
@@ -28,13 +28,10 @@ static AdjList* graph(benchmark::State& state, bool directed = false) {
 // D-ary Heaps
 
 template <typename T, typename Comparator>
-using D3Heap = DHeap<3, T, Comparator>;
+using D10Heap = DHeap<10, T, Comparator>;
 
 template <typename T, typename Comparator>
-using D4Heap = DHeap<4, T, Comparator>;
-
-template <typename T, typename Comparator>
-using D5Heap = DHeap<5, T, Comparator>;
+using D100Heap = DHeap<100, T, Comparator>;
 
 // Kruskal
 
@@ -42,71 +39,89 @@ static void BM_Kruskal(benchmark::State& state) {
   // Kruskal's algorithm does not need bidirectional links
   AdjList* g = graph(state, true);
   for (auto _ : state) benchmark::DoNotOptimize(kruskal(*g));
+  state.counters["edges"] = g->elements();
 }
 BENCHMARK(BM_Kruskal)->Apply(args);
+
+static void BM_Kruskal2Heap(benchmark::State& state) {
+  AdjList* g = graph(state, true);
+  for (auto _ : state) benchmark::DoNotOptimize(kruskal<BinaryHeap>(*g));
+  state.counters["edges"] = g->elements();
+}
+BENCHMARK(BM_Kruskal2Heap)->Apply(args);
+
+static void BM_KruskalD10Heap(benchmark::State& state) {
+  AdjList* g = graph(state, true);
+  for (auto _ : state) benchmark::DoNotOptimize(kruskal<D10Heap>(*g));
+  state.counters["edges"] = g->elements();
+}
+BENCHMARK(BM_KruskalD10Heap)->Apply(args);
+
+static void BM_KruskalD100Heap(benchmark::State& state) {
+  AdjList* g = graph(state, true);
+  for (auto _ : state) benchmark::DoNotOptimize(kruskal<D100Heap>(*g));
+  state.counters["edges"] = g->elements();
+}
+BENCHMARK(BM_KruskalD100Heap)->Apply(args);
 
 // Prim
 
 static void BM_Prim2Heap(benchmark::State& state) {
   AdjList* g = graph(state);
   for (auto _ : state) benchmark::DoNotOptimize(prim<BinaryHeap>(*g, 0));
+  state.counters["edges"] = g->elements();
 }
 BENCHMARK(BM_Prim2Heap)->Apply(args);
 
 static void BM_PrimFHeap(benchmark::State& state) {
   AdjList* g = graph(state);
   for (auto _ : state) benchmark::DoNotOptimize(prim<FibonacciHeap>(*g, 0));
+  state.counters["edges"] = g->elements();
 }
 BENCHMARK(BM_PrimFHeap)->Apply(args);
 
-static void BM_PrimD3Heap(benchmark::State& state) {
+static void BM_PrimD10Heap(benchmark::State& state) {
   AdjList* g = graph(state);
-  for (auto _ : state) benchmark::DoNotOptimize(prim<D3Heap>(*g, 0));
+  for (auto _ : state) benchmark::DoNotOptimize(prim<D10Heap>(*g, 0));
+  state.counters["edges"] = g->elements();
 }
-BENCHMARK(BM_PrimD3Heap)->Apply(args);
+BENCHMARK(BM_PrimD10Heap)->Apply(args);
 
-static void BM_PrimD4Heap(benchmark::State& state) {
+static void BM_PrimD100Heap(benchmark::State& state) {
   AdjList* g = graph(state);
-  for (auto _ : state) benchmark::DoNotOptimize(prim<D4Heap>(*g, 0));
+  for (auto _ : state) benchmark::DoNotOptimize(prim<D100Heap>(*g, 0));
+  state.counters["edges"] = g->elements();
 }
-BENCHMARK(BM_PrimD4Heap)->Apply(args);
-
-static void BM_PrimD5Heap(benchmark::State& state) {
-  AdjList* g = graph(state);
-  for (auto _ : state) benchmark::DoNotOptimize(prim<D5Heap>(*g, 0));
-}
-BENCHMARK(BM_PrimD5Heap)->Apply(args);
+BENCHMARK(BM_PrimD100Heap)->Apply(args);
 
 // Edmonds
 
 static void BM_Edmonds2Heap(benchmark::State& state) {
   AdjList* g = graph(state, true);
   for (auto _ : state) benchmark::DoNotOptimize(edmonds<BinaryHeap>(*g, 0));
+  state.counters["edges"] = g->elements();
 }
 BENCHMARK(BM_Edmonds2Heap)->Apply(args);
 
 static void BM_EdmondsFHeap(benchmark::State& state) {
   AdjList* g = graph(state, true);
   for (auto _ : state) benchmark::DoNotOptimize(edmonds<FibonacciHeap>(*g, 0));
+  state.counters["edges"] = g->elements();
 }
 BENCHMARK(BM_EdmondsFHeap)->Apply(args);
 
-static void BM_EdmondsD3Heap(benchmark::State& state) {
+static void BM_EdmondsD10Heap(benchmark::State& state) {
   AdjList* g = graph(state, true);
-  for (auto _ : state) benchmark::DoNotOptimize(edmonds<D3Heap>(*g, 0));
+  for (auto _ : state) benchmark::DoNotOptimize(edmonds<D10Heap>(*g, 0));
+  state.counters["edges"] = g->elements();
 }
-BENCHMARK(BM_EdmondsD3Heap)->Apply(args);
+BENCHMARK(BM_EdmondsD10Heap)->Apply(args);
 
-static void BM_EdmondsD4Heap(benchmark::State& state) {
+static void BM_EdmondsD100Heap(benchmark::State& state) {
   AdjList* g = graph(state, true);
-  for (auto _ : state) benchmark::DoNotOptimize(edmonds<D4Heap>(*g, 0));
+  for (auto _ : state) benchmark::DoNotOptimize(edmonds<D100Heap>(*g, 0));
+  state.counters["edges"] = g->elements();
 }
-BENCHMARK(BM_EdmondsD4Heap)->Apply(args);
-
-static void BM_EdmondsD5Heap(benchmark::State& state) {
-  AdjList* g = graph(state, true);
-  for (auto _ : state) benchmark::DoNotOptimize(edmonds<D5Heap>(*g, 0));
-}
-BENCHMARK(BM_EdmondsD5Heap)->Apply(args);
+BENCHMARK(BM_EdmondsD100Heap)->Apply(args);
 
 BENCHMARK_MAIN();

@@ -58,12 +58,11 @@ inline AdjList random_graph(size_t n, double d, int w, bool digraph = false) {
   AdjList result(n);
   const size_t m = digraph ? n * n : n * (n - 1);
 
-  // set_edges(result, edges, w, true, digraph);
   if (d <= 0.5) {
     set_edges(result, m * d, w, true, digraph);
   } else {
     make_complete(result, w, digraph);
-    // set_edges(result, m * (1-d), w, false, digraph);
+    set_edges(result, m * (1-d), w, false, digraph);
   }
 
   for (size_t v = 1; v < n; v++) {
