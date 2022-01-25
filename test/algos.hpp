@@ -108,6 +108,15 @@ TEST(minimum_spanning_tree, all_the_same) {
   int w_prim_fheap = 0;
   for (auto [u, v, w] : prim<FibonacciHeap>(graph, 0)) w_prim_fheap += w;
 
+  int w_kruskal_2heap = 0;
+  for (auto [u, v, w] : kruskal<BinaryHeap>(graph)) w_kruskal_2heap += w;
+  int w_kruskal_d3heap = 0;
+  for (auto [u, v, w] : kruskal<D3Heap>(graph)) w_kruskal_d3heap += w;
+  int w_kruskal_d4heap = 0;
+  for (auto [u, v, w] : kruskal<D4Heap>(graph)) w_kruskal_d4heap += w;
+  int w_kruskal_d5heap = 0;
+  for (auto [u, v, w] : kruskal<D4Heap>(graph)) w_kruskal_d5heap += w;
+
   int w_edmonds_2heap = edmonds<BinaryHeap>(graph, 0);
   int w_edmonds_d3heap = edmonds<D3Heap>(graph, 0);
   int w_edmonds_d4heap = edmonds<D4Heap>(graph, 0);
@@ -119,6 +128,11 @@ TEST(minimum_spanning_tree, all_the_same) {
   EXPECT_EQ(w_kruskal, w_prim_d4heap);
   EXPECT_EQ(w_kruskal, w_prim_d5heap);
   EXPECT_EQ(w_kruskal, w_prim_fheap);
+
+  EXPECT_EQ(w_kruskal, w_kruskal_2heap);
+  EXPECT_EQ(w_kruskal, w_kruskal_d3heap);
+  EXPECT_EQ(w_kruskal, w_kruskal_d4heap);
+  EXPECT_EQ(w_kruskal, w_kruskal_d5heap);
 
   EXPECT_EQ(w_kruskal, w_edmonds_2heap);
   EXPECT_EQ(w_kruskal, w_edmonds_d3heap);

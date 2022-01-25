@@ -57,13 +57,13 @@ static void set_edges(AdjList& g, size_t m, int w, bool add, bool digraph) {
 inline AdjList random_graph(size_t n, double d, int w, bool digraph = false) {
   AdjList result(n);
   const size_t m = digraph ? n * n : n * (n - 1);
-  const size_t edges = m * d;
 
+  // set_edges(result, edges, w, true, digraph);
   if (d <= 0.5) {
-    set_edges(result, edges, w, true, digraph);
+    set_edges(result, m * d, w, true, digraph);
   } else {
     make_complete(result, w, digraph);
-    set_edges(result, m - edges, w, false, digraph);
+    // set_edges(result, m * (1-d), w, false, digraph);
   }
 
   for (size_t v = 1; v < n; v++) {
@@ -89,6 +89,30 @@ inline std::vector<edge> kruskal(const AdjList& graph) {
   std::sort(edges.begin(), edges.end(), weightless());
 
   for (auto [u, v, w] : edges) {
+    if (set.find(u) != set.find(v)) {
+      result.push_back({u, v, w});
+      set.unite(u, v);
+    }
+  }
+
+  return result;
+}
+
+template <template <typename, typename> class PriorityQueue>
+inline std::vector<edge> kruskal(const AdjList& graph) {
+  std::vector<edge> result;
+  result.reserve(graph.size() - 1);
+  DisjointSet set(graph.size());
+
+  std::vector<edge> edges;
+  edges.reserve(graph.elements());
+  for (size_t u = 0; u < graph.size(); u++)
+    for (auto [v, w] : graph.adjacents(u)) edges.push_back({u, v, w});
+  PriorityQueue<edge, weightless> queue(edges.begin(), edges.end());
+
+  while (result.size() != graph.size() - 1) {
+    auto [u, v, w] = queue.top();
+    queue.pop();
     if (set.find(u) != set.find(v)) {
       result.push_back({u, v, w});
       set.unite(u, v);
