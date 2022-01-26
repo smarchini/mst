@@ -9,7 +9,6 @@ class FibonacciHeap {
     Node *prev = this, *next = this;
     Node *child = nullptr, *parent = nullptr;
     int degree = 0;
-    bool marked = false;
 
     Node(T value) : value(value) {}
 
@@ -88,7 +87,6 @@ class FibonacciHeap {
     //  Melding: move the children into the forest
     if (Node* it = heap->child) {
       do {
-        it->marked = false;
         it->parent = nullptr;
         it = it->next;
       } while (it != heap->child);
