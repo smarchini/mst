@@ -62,14 +62,14 @@ inline AdjList random_graph(size_t n, double d, int w, bool digraph = false) {
     set_edges(result, m * d, w, true, digraph);
   } else {
     make_complete(result, w, digraph);
-    set_edges(result, m * (1-d), w, false, digraph);
+    set_edges(result, m * (1 - d), w, false, digraph);
   }
 
   for (size_t v = 1; v < n; v++) {
     if (digraph) {
-      result.insert(0, v, w + 1);
+      result.insert(0, v, w);
     } else {
-      result.insertBidirectional(0, v, w + 1);
+      result.insertBidirectional(0, v, w);
     }
   }
 
@@ -187,4 +187,49 @@ int edmonds(const AdjList& graph, size_t source) {
     }
   }
   return score;
+}
+
+inline std::vector<edge> countsort(std::vector<edge>& input) {
+  int min = std::numeric_limits<int>::max();
+  int max = std::numeric_limits<int>::min();
+  for (auto [u, v, w] : input) {
+    if (w > max) max = w;
+    if (w < min) min = w;
+  }
+
+  std::vector<int> counter(max - min + 1);
+  for (auto [u, v, w] : input) counter[w - min]++;
+  for (size_t i = 1; i < counter.size(); i++) counter[i] += counter[i - 1];
+
+  std::vector<edge> result(input.size());
+  for (int i = input.size() - 1; i >= 0; i--) {
+    auto [u, v, w] = input[i];
+    result[counter[w - min] - 1] = {u, v, w};
+    counter[w - min]--;
+  }
+
+  return result;
+}
+
+inline std::vector<edge> kruskal_int(const AdjList& graph) {
+  std::vector<edge> result;
+  result.reserve(graph.size() - 1);
+  DisjointSet set(graph.size());
+
+  std::vector<edge> edges;
+  edges.reserve(graph.elements());
+  for (size_t u = 0; u < graph.size(); u++)
+    for (auto [v, w] : graph.adjacents(u))
+      edges.push_back({u, v, w});
+
+  edges = countsort(edges);
+
+  for (auto [u, v, w] : edges) {
+    if (set.find(u) != set.find(v)) {
+      result.push_back({u, v, w});
+      set.unite(u, v);
+    }
+  }
+
+  return result;
 }

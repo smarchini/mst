@@ -67,10 +67,6 @@ TEST(minimum_spanning_arborescence, edmonds) {
 
 TEST(minimum_spanning_tree, all_the_same) {
   const size_t n = 100;
-  std::random_device dev;
-  std::mt19937 rng(dev());
-  std::uniform_int_distribution<std::mt19937::result_type> weight(1, 100);
-
   auto graph = random_graph(n, 0.8, 100);
   // AdjList graph;
   // graph.insert(0, 4, 13);
@@ -97,6 +93,9 @@ TEST(minimum_spanning_tree, all_the_same) {
   int w_kruskal = 0;
   for (auto [u, v, w] : kruskal(graph)) w_kruskal += w;
 
+  int w_kruskal_counting = 0;
+  for (auto [u, v, w] : kruskal_int(graph)) w_kruskal_counting += w;
+
   int w_prim_2heap = 0;
   for (auto [u, v, w] : prim<BinaryHeap>(graph, 0)) w_prim_2heap += w;
   int w_prim_d3heap = 0;
@@ -122,6 +121,8 @@ TEST(minimum_spanning_tree, all_the_same) {
   int w_edmonds_d4heap = edmonds<D4Heap>(graph, 0);
   int w_edmonds_d5heap = edmonds<D5Heap>(graph, 0);
   int w_edmonds_fheap = edmonds<FibonacciHeap>(graph, 0);
+
+  EXPECT_EQ(w_kruskal, w_kruskal_counting);
 
   EXPECT_EQ(w_kruskal, w_prim_2heap);
   EXPECT_EQ(w_kruskal, w_prim_d3heap);
