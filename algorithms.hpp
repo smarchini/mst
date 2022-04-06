@@ -39,17 +39,19 @@ static void set_edges(AdjList& g, size_t m, int w, bool add, bool digraph) {
     if (add && it == std::end(adj)) {
       if (digraph) {
         g.insert(u, v, weight(rng));
+        k += 1;
       } else {
         g.insertBidirectional(u, v, weight(rng));
+        k += 2;
       }
-      k++;
     } else if (!add && it != std::end(adj)) {
       if (digraph) {
         g.remove(u, v);
+        k += 1;
       } else {
         g.removeBidirectional(u, v);
+        k += 2;
       }
-      k++;
     }
   }
 }
@@ -67,9 +69,9 @@ inline AdjList random_graph(size_t n, double d, int w, bool digraph = false) {
 
   for (size_t v = 1; v < n; v++) {
     if (digraph) {
-      result.insert(0, v, w);
+      result.insert(0, v, w + 1);
     } else {
-      result.insertBidirectional(0, v, w);
+      result.insertBidirectional(0, v, w + 1);
     }
   }
 

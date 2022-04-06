@@ -12,12 +12,17 @@ bin/test: test/* *.hpp *.cpp
 	@mkdir -p bin
 	$(CXX) $(CXXFLAGS) $(DEBUG) test/test.cpp -o bin/test $(LDLIBS)
 
-benchmark: bin/benchmark
-	./bin/benchmark --benchmark_color=yes
+benchmark: bin/density bin/size
+	./bin/density --benchmark_color=yes
+	./bin/size --benchmark_color=yes
 
-bin/benchmark: *.hpp *.cpp
+bin/density: *.hpp *.cpp
 	@mkdir -p bin
-	$(CXX) $(CXXFLAGS) $(RELEASE) main.cpp -o bin/benchmark $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(RELEASE) -DDENSITYBENCH main.cpp -o bin/density $(LDLIBS)
+
+bin/size: *.hpp *.cpp
+	@mkdir -p bin
+	$(CXX) $(CXXFLAGS) $(RELEASE) -DSIZEBENCH main.cpp -o bin/size $(LDLIBS)
 
 .PHONY: clean dataset
 
