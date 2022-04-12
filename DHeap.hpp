@@ -42,6 +42,11 @@ class DHeap {
     for (size_t i = data.size() - 1; i != -1ULL; i--) downheapfy(i);
   }
 
+  DHeap(DHeap &) = delete;
+  DHeap& operator=(DHeap &) = delete;
+  DHeap(DHeap &&) = default;
+  DHeap& operator=(DHeap && ) = default;
+
   iterator begin() { return data.begin(); }
 
   iterator end() { return data.end(); }
@@ -66,8 +71,9 @@ class DHeap {
   }
 
   void merge(DHeap<D, T, Comparator> &&oth) {
+    size_t oldsize = data.size();
     data.insert(std::end(data), std::begin(oth.data), std::end(oth.data));
-    for (size_t i = data.size() - 1; i != -1ULL; --i) downheapfy(i);
+    for (size_t i = oldsize; i < data.size(); i++) upheapfy(i);
   }
 
  private:

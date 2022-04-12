@@ -67,13 +67,8 @@ inline AdjList random_graph(size_t n, double d, int w, bool digraph = false) {
     set_edges(result, m * (1 - d), w, false, digraph);
   }
 
-  for (size_t v = 1; v < n; v++) {
-    if (digraph) {
-      result.insert(0, v, w + 1);
-    } else {
-      result.insertBidirectional(0, v, w + 1);
-    }
-  }
+  for (size_t v = 1; v < n; v++)
+    result.insertBidirectional(0, v, w + 1);
 
   return result;
 }
@@ -155,16 +150,19 @@ std::vector<edge> prim(const AdjList& graph, size_t source) {
 }
 
 template <template <typename, typename> class PriorityQueue>
-int edmonds(const AdjList& graph, size_t source) {
-  DisjointSet set(graph.size());
-  std::vector<PriorityQueue<edgeto, weightless>> inedges(graph.size());
-  for (size_t u = 0; u < graph.size(); u++)
-    for (auto [v, w] : graph.adjacents(u))
-      inedges[v].push(std::make_tuple(u, w));
+int edmonds(const AdjList& invgraph, size_t source) {
+  DisjointSet set(invgraph.size());
+  std::vector<PriorityQueue<edgefrom, weightless>> inedges;
+  inedges.reserve(invgraph.size());
+  for (const auto &adj : invgraph) {
+    PriorityQueue<edgefrom, weightless> queue(adj.begin(), adj.end());
+    inedges.push_back(std::move(queue));
+  }
+
   int score = 0;
-  std::vector<size_t> visited(graph.size(), -1ULL);
+  std::vector<size_t> visited(invgraph.size(), -1ULL);
   visited[source] = source;
-  for (size_t s = 0; s < graph.size(); s++) {
+  for (size_t s = 0; s < invgraph.size(); s++) {
     std::vector<size_t> path;
     for (size_t v = s; visited[v] == -1ULL;) {
       path.push_back(v);

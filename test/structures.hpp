@@ -13,16 +13,23 @@ inline void heap(size_t n) {
   std::generate(a.begin(), a.end(), std::rand);
   std::generate(b.begin(), b.end(), std::rand);
 
-  HEAP heap;
-  for (auto e : a) heap.push(e);
-  for (auto e : b) heap.push(e);
+  HEAP heap, ha, hb;
+  for (auto e : a) { heap.push(e); ha.push(e); }
+  for (auto e : b) { heap.push(e); hb.push(e); }
+
+  HEAP merged;
+  merged.merge(std::move(ha));
+  merged.merge(std::move(hb));
 
   auto curr = heap.top();
   while (!heap.empty()) {
     auto next = heap.top();
+    auto merged_next = merged.top();
+    EXPECT_EQ(next, merged_next);
     EXPECT_LE(curr, next);
     curr = next;
     heap.pop();
+    merged.pop();
   }
 }
 

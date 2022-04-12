@@ -9,6 +9,7 @@
 constexpr int infty = std::numeric_limits<int>::max();
 typedef std::tuple<size_t, size_t, int> edge;
 typedef std::tuple<size_t, int> edgeto;
+typedef std::tuple<size_t, int> edgefrom;
 
 struct weightless {
   bool operator()(const edgeto &lhs, const edgeto &rhs) const {
@@ -36,6 +37,8 @@ class AdjList {
 
   void reserve(size_t size) { data.reserve(size); }
   void resize(size_t size) { data.resize(size); }
+  const_iterator begin() const { return data.begin(); }
+  const_iterator end() const { return data.end(); }
 
   size_t size() const noexcept { return data.size(); }
   size_t elements() const noexcept { return count; }

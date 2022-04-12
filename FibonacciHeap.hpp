@@ -61,10 +61,6 @@ class FibonacciHeap {
   FibonacciHeap() {}
   ~FibonacciHeap() { deleteTraversal(heap); }
 
-  FibonacciHeap(const FibonacciHeap&) = delete;
-
-  FibonacciHeap(FibonacciHeap&& oth) { std::swap(this->heap, oth.heap); }
-
   template <typename It>
   explicit FibonacciHeap(It begin, It end) {
     static_assert(std::is_same<value_type, T>::value, "Type mismatch");
@@ -77,7 +73,10 @@ class FibonacciHeap {
   FibonacciHeap(std::initializer_list<T> &&lst)
       : FibonacciHeap(std::begin(lst), std::end(lst)) {}
 
-  FibonacciHeap& operator=(const FibonacciHeap&) = delete;
+
+  FibonacciHeap(FibonacciHeap &) = delete;
+  FibonacciHeap& operator=(FibonacciHeap &) = delete;
+  FibonacciHeap(FibonacciHeap&& oth) { std::swap(this->heap, oth.heap); }
   FibonacciHeap& operator=(FibonacciHeap&& oth) {
     std::swap(this->heap, oth.heap);
     return *this;

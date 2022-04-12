@@ -7,11 +7,11 @@
 
 #ifdef DENSITYBENCH
 constexpr size_t nodes[] = {500};
-constexpr double degrees[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+constexpr double degrees[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.91, 0.92, 0.93, 0.94, 0.95, 0.96, 0.97, 0.98, 0.99, 1.0};
 constexpr int weights[] = {1000}; // INT_MAX if we do not use Kruskal's counting sort
 #elif SIZEBENCH
-constexpr size_t nodes[] = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000};
-constexpr double degrees[] = {0.5};
+constexpr size_t nodes[] = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000};
+constexpr double degrees[] = {1.00};
 constexpr int weights[] = {1000}; // INT_MAX if we do not use Kruskal's counting sort
 #else
 constexpr size_t nodes[] = {};
@@ -42,6 +42,9 @@ using D8Heap = DHeap<8, T, Comparator>;
 
 template <typename T, typename Comparator>
 using D16Heap = DHeap<16, T, Comparator>;
+
+template <typename T, typename Comparator>
+using D64Heap = DHeap<64, T, Comparator>;
 
 
 // Kruskal (it does not need explicit bidirectional links)
@@ -81,6 +84,13 @@ static void BM_KruskalD16Heap(benchmark::State& state) {
 }
 BENCHMARK(BM_KruskalD16Heap)->Apply(args);
 
+static void BM_KruskalD64Heap(benchmark::State& state) {
+  AdjList* g = graph(state, true);
+  for (auto _ : state) benchmark::DoNotOptimize(kruskal<D64Heap>(*g));
+  state.counters["edges"] = g->elements();
+}
+BENCHMARK(BM_KruskalD64Heap)->Apply(args);
+
 static void BM_KruskalFHeap(benchmark::State& state) {
   AdjList* g = graph(state, true);
   for (auto _ : state) benchmark::DoNotOptimize(kruskal<FibonacciHeap>(*g));
@@ -112,6 +122,13 @@ static void BM_PrimD16Heap(benchmark::State& state) {
 }
 BENCHMARK(BM_PrimD16Heap)->Apply(args);
 
+static void BM_PrimD64Heap(benchmark::State& state) {
+  AdjList* g = graph(state);
+  for (auto _ : state) benchmark::DoNotOptimize(prim<D64Heap>(*g, 0));
+  state.counters["edges"] = g->elements();
+}
+BENCHMARK(BM_PrimD64Heap)->Apply(args);
+
 static void BM_PrimFHeap(benchmark::State& state) {
   AdjList* g = graph(state);
   for (auto _ : state) benchmark::DoNotOptimize(prim<FibonacciHeap>(*g, 0));
@@ -142,6 +159,13 @@ static void BM_EdmondsD16Heap(benchmark::State& state) {
   state.counters["edges"] = g->elements();
 }
 BENCHMARK(BM_EdmondsD16Heap)->Apply(args);
+
+static void BM_EdmondsD64Heap(benchmark::State& state) {
+  AdjList* g = graph(state, true);
+  for (auto _ : state) benchmark::DoNotOptimize(edmonds<D64Heap>(*g, 0));
+  state.counters["edges"] = g->elements();
+}
+BENCHMARK(BM_EdmondsD64Heap)->Apply(args);
 
 static void BM_EdmondsFHeap(benchmark::State& state) {
   AdjList* g = graph(state, true);

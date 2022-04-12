@@ -33,6 +33,11 @@ class BinaryHeap {
     for (size_t i = data.size() - 1; i != -1ULL; i--) downheapfy(i);
   }
 
+  BinaryHeap(BinaryHeap &) = delete;
+  BinaryHeap& operator=(BinaryHeap &) = delete;
+  BinaryHeap(BinaryHeap &&) = default;
+  BinaryHeap& operator=(BinaryHeap && ) = default;
+
   iterator begin() { return data.begin(); }
 
   iterator end() { return data.end(); }
@@ -57,8 +62,9 @@ class BinaryHeap {
   }
 
   void merge(BinaryHeap<T, Comparator> &&oth) {
+    size_t oldsize = data.size();
     data.insert(std::end(data), std::begin(oth.data), std::end(oth.data));
-    for (size_t i = data.size() - 1; i != -1ULL; --i) downheapfy(i);
+    for (size_t i = oldsize; i < data.size(); i++) upheapfy(i);
   }
 
  private:
