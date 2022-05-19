@@ -8,9 +8,9 @@ all: test
 test: bin/test
 	./bin/test --gtest_color=yes
 
-bin/test: test/* *.hpp *.cpp
+bin/test: test/* mst/*.hpp *.cpp
 	@mkdir -p bin
-	$(CXX) $(CXXFLAGS) $(DEBUG) test/test.cpp -o bin/test $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(DEBUG) -Imst test/test.cpp -o bin/test $(LDLIBS)
 
 benchmark: bin/density bin/size
 	./bin/density --benchmark_color=yes
@@ -18,11 +18,11 @@ benchmark: bin/density bin/size
 
 bin/density: *.hpp *.cpp
 	@mkdir -p bin
-	$(CXX) $(CXXFLAGS) $(RELEASE) -DDENSITYBENCH main.cpp -o bin/density $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(RELEASE) -Imst -DDENSITYBENCH main.cpp -o bin/density $(LDLIBS)
 
 bin/size: *.hpp *.cpp
 	@mkdir -p bin
-	$(CXX) $(CXXFLAGS) $(RELEASE) -DSIZEBENCH main.cpp -o bin/size $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(RELEASE) -Imst -DSIZEBENCH main.cpp -o bin/size $(LDLIBS)
 
 .PHONY: clean dataset
 

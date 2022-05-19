@@ -15,17 +15,17 @@ Focus of our study are:
 You are welcome to read the conclusions in the final section of the
 [report](report.pdf).
 
-# Results
-![Alt text](readme_figures/1.png?raw=true "Performance of Prim's and Kruskal's algorithm on medium density graphs at varying size.")
+## Results
+![Alt text](results/readme/1.png?raw=true "Performance of Prim's and Kruskal's algorithm on medium density graphs at varying size.")
 ---
-![Alt text](readme_figures/2.png?raw=true "Performance of Prim's and Kruskal's algorithm on sparse graphs at varying size.")
+![Alt text](results/readme/2.png?raw=true "Performance of Prim's and Kruskal's algorithm on sparse graphs at varying size.")
 ---
-![Alt text](readme_figures/3.png?raw=true "Performance of Prim's and Kruskal's algorithm on complete graphs at varying size.")
+![Alt text](results/readme/3.png?raw=true "Performance of Prim's and Kruskal's algorithm on complete graphs at varying size.")
 ---
-![Alt text](readme_figures/4.png?raw=true "Performance of Prim's and Kruskal's algorithm on 500 nodes at varying density.")
+![Alt text](results/readme/4.png?raw=true "Performance of Prim's and Kruskal's algorithm on 500 nodes at varying density.")
 ---
-![Alt text](readme_figures/5.png?raw=true "Performance of Edmonds' algorithm on complete graphs at varying size.")
+![Alt text](results/readme/5.png?raw=true "Performance of Edmonds' algorithm on complete graphs at varying size.")
 ---
-![Alt text](readme_figures/6.png?raw=true "Performance of Edmonds' algorithm on 500 nodes graphs at varying density.")
+![Alt text](results/readme/6.png?raw=true "Performance of Edmonds' algorithm on 500 nodes graphs at varying density.")
 ---
-![Alt text](readme_figures/7.png?raw=true "Performance of Edmonds' algorithm on 500 nodes complete graphs.")
+![Alt text](results/readme/7.png?raw=true "Performance of Edmonds' algorithm on 500 nodes complete graphs.")
