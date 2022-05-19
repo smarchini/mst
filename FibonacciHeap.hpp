@@ -29,7 +29,6 @@ class FibonacciHeap {
    public:
     NodeIterator(Node* node) : head(node), node(node) {}
 
-    // T operator*() { return node->value; }
     T& operator*() { return node->value; }
 
     bool operator==(const NodeIterator& oth) const { return node == oth.node; }
@@ -85,15 +84,10 @@ class FibonacciHeap {
   iterator begin() { return NodeIterator(heap); }
   iterator end() { return nullptr; }
 
-  // void reserve(size_t size) { }
-
-  // size_type size() const noexcept { }
-
   bool empty() const noexcept { return heap == nullptr; }
 
   const_reference top() const noexcept { return heap->value; }
 
-  // TODO usare Comparator invece degli < hardcodati
   void pop() {
     //  Melding: move the children into the forest
     if (Node* it = heap->child) {
