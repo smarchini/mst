@@ -58,4 +58,4 @@ plt.xlabel("Density")
 plt.ylabel("Time [ns]")
 
 #plt.show()
-plt.savefig('msa-density-median50.png', bbox_inches='tight')
+plt.savefig('msa-density-median50.pdf', bbox_inches='tight')

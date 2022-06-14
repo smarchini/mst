@@ -59,4 +59,4 @@ plt.xlabel("Nodes")
 plt.ylabel("Time [ns]")
 
 #plt.show()
-plt.savefig('msa-size-median50.png', bbox_inches='tight')
+plt.savefig('msa-size-median50.pdf', bbox_inches='tight')

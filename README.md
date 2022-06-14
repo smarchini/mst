@@ -12,8 +12,7 @@ Focus of our study are:
 - Chu–Liu/Edmonds' algorithm for the minimum spanning arborescence problem;
 - binary, d-ary and Fibonacci heaps data structures and counting sort.
 
-You are welcome to read the conclusions in the final section of the
-[report](report.pdf).
+You are welcome to read the conclusions in the final section of the report.
 
 ## Results
 ![Alt text](results/readme/1.png?raw=true "Performance of Prim's and Kruskal's algorithm on medium density graphs at varying size.")

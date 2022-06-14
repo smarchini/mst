@@ -46,4 +46,4 @@ plt.yscale("log", base=10)
 plt.ylabel("Time [ns]")
 
 #plt.show()
-plt.savefig('msa-variation.png', bbox_inches='tight')
+plt.savefig('msa-variation.pdf', bbox_inches='tight')

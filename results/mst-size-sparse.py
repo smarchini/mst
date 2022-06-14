@@ -54,8 +54,8 @@ add('PrimD64Heap', 0.01, "purple", "-")
 #add('EdmondsFHeap',   0.01, "k", "--")
 
 
-kruskal_stdsort = Line2D([0], [0], label='krusal stdsort',  color='brown', linestyle='-.')
-kruskal_cntsort = Line2D([0], [0], label='krusal cntsort',  color='black', linestyle='-.')
+kruskal_stdsort = Line2D([0], [0], label='kruskal stdsort',  color='brown', linestyle='-.')
+kruskal_cntsort = Line2D([0], [0], label='kruskal cntsort',  color='black', linestyle='-.')
 
 kruskal_d2heap = Line2D([0], [0], label='kruskal 2-heap',  color='red', linestyle=':')
 kruskal_d8heap = Line2D([0], [0],  label='kruskal 8-heap', color='blue', linestyle=':')
@@ -84,4 +84,4 @@ plt.xlabel("Nodes")
 plt.ylabel("Time [ns]")
 
 #plt.show()
-plt.savefig('mst-size-sparse.png', bbox_inches='tight')
+plt.savefig('mst-size-sparse.pdf', bbox_inches='tight')
