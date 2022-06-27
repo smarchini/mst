@@ -1,7 +1,7 @@
 DEBUG = -g -O
 RELEASE = -g -O3
 CXXFLAGS = -std=c++20 -Wall -Wextra -march=native -mavx -mavx2 -msse2 -msse4.2 -fopenmp -funroll-loops -fno-omit-frame-pointer -I./
-LDLIBS = -lgtest  -lbenchmark -lpthread
+LDLIBS = -lgtest -lbenchmark -lpthread
 
 all: test
 
