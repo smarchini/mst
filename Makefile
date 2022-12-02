@@ -1,28 +1,29 @@
-DEBUG = -g -O
-RELEASE = -g -O3
-CXXFLAGS = -std=c++20 -Wall -Wextra -march=native -mavx -mavx2 -msse2 -msse4.2 -fopenmp -funroll-loops -fno-omit-frame-pointer -I./
-LDLIBS = -lgtest -lbenchmark -lpthread
+CXXFLAGS += -std=c++20 -march=native -mtune=native -Wall -Wextra -I ./mst
+LDLIBS += -lgtest -lbenchmark -lpthread
+DEPENDENCIES = $(shell find . -name "*.[ch]pp")
+DEBUG := -g -O0 -funroll-loops -fno-omit-frame-pointer
+RELEASE := -O3
 
-all: test
+all: test benchmark
 
 test: bin/test
 	./bin/test --gtest_color=yes
 
-bin/test: test/* mst/*.hpp *.cpp
+bin/test: test/test.cpp $(DEPENDENCIES)
 	@mkdir -p bin
-	$(CXX) $(CXXFLAGS) $(DEBUG) -Imst test/test.cpp -o bin/test $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(DEBUG) -o $@ $< $(LDLIBS)
 
 benchmark: bin/density bin/size
 	./bin/density --benchmark_color=yes
 	./bin/size --benchmark_color=yes
 
-bin/density: *.hpp *.cpp
+bin/density: main.cpp $(DEPENDENCIES)
 	@mkdir -p bin
-	$(CXX) $(CXXFLAGS) $(RELEASE) -Imst -DDENSITYBENCH main.cpp -o bin/density $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(RELEASE) -DDENSITYBENCH -o $@ $< $(LDLIBS)
 
-bin/size: *.hpp *.cpp
+bin/size: main.cpp $(DEPENDENCIES)
 	@mkdir -p bin
-	$(CXX) $(CXXFLAGS) $(RELEASE) -Imst -DSIZEBENCH main.cpp -o bin/size $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(RELEASE) -DSIZEBENCH -o $@ $< $(LDLIBS)
 
 .PHONY: clean dataset
 

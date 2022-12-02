@@ -1,0 +1,5 @@
+.direnv/
+.envrc
+flake.*
+bin/
+compile_commands.json
